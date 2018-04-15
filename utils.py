@@ -18,6 +18,7 @@ def load_dataset():
 def display_image(images, index):
     print(mndata.display(images[index]))
 
+# Display the labels[index] to the console
 def display_label(labels, index):
     print(labels[index])
 
