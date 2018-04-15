@@ -17,12 +17,14 @@ EPOCHS      = 10
 # 80% training set, 20% validation set
 def split_dataset(images, labels):
     X_train, X_val, y_train, y_val = train_test_split(images, labels, test_size=0.2)
+    X_train = X_train.reshape(X_train.shape[0], 28, 28, 1)
+    X_val = X_val.reshape(X_val.shape[0], 28, 28, 1)
     return X_train, X_val, y_train, y_val
 
 
 def get_next_batch(X, y):
     # Will contains images and corresponding angle
-    X_batch = np.zeros((BATCH_SIZE, 28, 28, 3))
+    X_batch = np.zeros((BATCH_SIZE, 28, 28, 1))
     y_batch = np.zeros(BATCH_SIZE)
 
     while True:
@@ -37,7 +39,7 @@ def get_conv2d_model():
     model = Sequential()
     optimizer = Adam(lr=0.001)
 
-    model.add(Lambda(lambda x: x / 127.5 - 1., input_shape=(28, 28, 3), output_shape=(28, 28, 3)))
+    model.add(Lambda(lambda x: x / 127.5 - 1., input_shape=(28, 28, 1), output_shape=(28, 28, 1)))
     model.add(Convolution2D(64, (3, 3), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.25))
@@ -74,10 +76,11 @@ labels = np.array(labels)
 # Split dataset
 X_train, X_val, y_train, y_val = split_dataset(images, labels)
 print(X_train.shape)
+print(y_train.shape)
 
-model = get_conv2d_model()
+#model = get_conv2d_model()
 
-trained_model = train(model, X_train, y_train, X_val, y_val)
+#trained_model = train(model, X_train, y_train, X_val, y_val)
 
 
 #utils.display_image(images, 234)
