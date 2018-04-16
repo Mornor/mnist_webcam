@@ -12,7 +12,7 @@ from keras.models import Sequential
 
 # Define training parameters
 BATCH_SIZE  = 128
-NUM_CLASSES = 10
+NUM_CLASSES = 10 # (0 to 9)
 EPOCHS      = 10
 
 # 80% training set, 20% validation set
@@ -66,11 +66,11 @@ def train(model, X_train, y_train, X_val, y_val):
 
     model.fit_generator(
         generator=get_next_batch(X_train, y_train),
-        samples_per_epoch=20,
-        nb_epoch=EPOCHS,
+        steps_per_epoch=20,
+        epochs=EPOCHS,
         validation_data=get_next_batch(X_val, y_val),
-        nb_val_samples=len(X_val)
-        #callbacks=[early_stopping, model_checkpoint]
+        validation_steps=len(X_val)
+    #    callbacks=[early_stopping, model_checkpoint]
     )
 
     return model
