@@ -13,7 +13,7 @@ from keras.models import Sequential
 # Define training parameters
 BATCH_SIZE  = 128
 NUM_CLASSES = 10 # (0 to 9)
-EPOCHS      = 10
+EPOCHS      = 3
 
 # 80% training set, 20% validation set
 def split_dataset(images, labels):
@@ -29,15 +29,15 @@ def one_hot_encode(y):
 def get_next_batch(X, y):
     # Will contains images and labels
     X_batch = np.zeros((BATCH_SIZE, 28, 28, 1))
-    y_batch = np.zeros(BATCH_SIZE)
+    y_batch = np.zeros((BATCH_SIZE, 10))
 
     while True:
         for i in range(0, BATCH_SIZE):
             random_index = np.random.randint(len(X))
             X_batch[i] = X[random_index]
             y_batch[i] = y[random_index]
-        print(X_batch.shape)
-        print(y_batch.shape)
+        #print(X_batch.shape)
+        #print(y_batch.shape)
         yield X_batch, y_batch
 
 
@@ -64,14 +64,23 @@ def train(model, X_train, y_train, X_val, y_val):
     # Save the best model depending on the val_loss
     #model_checkpoint = ModelCheckpoint("model.h5", monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto')
 
-    model.fit_generator(
-        generator=get_next_batch(X_train, y_train),
-        steps_per_epoch=20,
+    model.fit(
+        X_train,
+        y_train,
+        batch_size=BATCH_SIZE,
         epochs=EPOCHS,
-        validation_data=get_next_batch(X_val, y_val),
-        validation_steps=len(X_val)
-    #    callbacks=[early_stopping, model_checkpoint]
+        verbose=1,
+        validation_data=(X_val, y_val)
     )
+
+    #model.fit_generator(
+    #    generator=get_next_batch(X_train, y_train),
+    #    steps_per_epoch=200,
+    #    epochs=EPOCHS,
+    #    validation_data=get_next_batch(X_val, y_val),
+    #    validation_steps=len(X_val)
+    #    callbacks=[early_stopping, model_checkpoint]
+    #)
 
     return model
 
