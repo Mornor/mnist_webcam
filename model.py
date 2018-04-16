@@ -18,10 +18,6 @@ EPOCHS      = 10
 # 80% training set, 20% validation set
 def split_dataset(images, labels):
     X_train, X_val, y_train, y_val = train_test_split(images, labels, test_size=0.2)
-   # X_train = X_train.reshape(X_train.shape[0], 28, 28, 1)
-   # X_val = X_val.reshape(X_val.shape[0], 28, 28, 1)
-    #y_train = keras.utils.to_categorical(y_train, NUM_CLASSES)
-    #y_val = keras.utils.to_categorical(y_val, NUM_CLASSES)
     return X_train, X_val, y_train, y_val
 
 def reshape(X):
