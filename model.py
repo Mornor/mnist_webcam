@@ -18,10 +18,17 @@ EPOCHS      = 10
 # 80% training set, 20% validation set
 def split_dataset(images, labels):
     X_train, X_val, y_train, y_val = train_test_split(images, labels, test_size=0.2)
-    X_train = X_train.reshape(X_train.shape[0], 28, 28, 1)
-    X_val = X_val.reshape(X_val.shape[0], 28, 28, 1)
+   # X_train = X_train.reshape(X_train.shape[0], 28, 28, 1)
+   # X_val = X_val.reshape(X_val.shape[0], 28, 28, 1)
+    #y_train = keras.utils.to_categorical(y_train, NUM_CLASSES)
+    #y_val = keras.utils.to_categorical(y_val, NUM_CLASSES)
     return X_train, X_val, y_train, y_val
 
+def reshape(X):
+    return X.reshape(X.shape[0], 28, 28, 1)
+
+def one_hot_encode(y):
+    return keras.utils.to_categorical(y, NUM_CLASSES)
 
 def get_next_batch(X, y):
     # Will contains images and labels
@@ -77,13 +84,22 @@ images, labels = utils.load_dataset()
 images = np.array(images)
 labels = np.array(labels)
 
-# Split dataset
+# Prepare dataset
 X_train, X_val, y_train, y_val = split_dataset(images, labels)
-print(X_train.shape)
-print(y_train.shape)
+X_train = reshape(X_train)
+X_val = reshape(X_val)
+y_train = one_hot_encode(y_train)
+y_val = one_hot_encode(y_val)
 
+#print(X_train.shape)
+#print(X_val.shape)
+
+#print(y_train.shape)
+
+# Get Conv2D model
 model = get_conv2d_model()
 
+# Train it
 trained_model = train(model, X_train, y_train, X_val, y_val)
 
 
