@@ -3,6 +3,7 @@
 
 # Import
 import mnist
+import json
 
 DATA_DIR_PATH = 'data/'
 mndata = mnist.MNIST(DATA_DIR_PATH)
@@ -21,6 +22,11 @@ def display_image(images, index):
 # Display the labels[index] to the console
 def display_label(labels, index):
     print(labels[index])
+
+# Save the model under ./model.json, as well as the weights under ./model.h5
+def save_model(model):
+    with open('./model.json', 'w') as outfile:
+        json.dump(model.to_json(), outfile)
 
 #images, labels = load_dataset()
 #display_image(images, 235)

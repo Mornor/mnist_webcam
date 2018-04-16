@@ -107,6 +107,8 @@ model = get_conv2d_model()
 # Train it
 trained_model = train(model, X_train, y_train, X_val, y_val)
 
+# Save it
+utils.save_model(trained_model)
 
 #utils.display_image(images, 234)
 #utils.display_label(labels, 234)
