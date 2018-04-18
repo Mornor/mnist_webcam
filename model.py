@@ -46,7 +46,7 @@ def get_conv2d_model():
     optimizer = Adam(lr=0.001)
 
     model.add(Lambda(lambda x: x / 127.5 - 1., input_shape=(28, 28, 1)))
-    model.add(Convolution2D(64, (1, 1), activation='relu'))
+    model.add(Convolution2D(64, (3, 3), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.25))
     model.add(Flatten())
@@ -64,23 +64,14 @@ def train(model, X_train, y_train, X_val, y_val):
     # Save the best model depending on the val_loss
     #model_checkpoint = ModelCheckpoint("model.h5", monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto')
 
-    model.fit(
-        X_train,
-        y_train,
-        batch_size=BATCH_SIZE,
+    model.fit_generator(
+        generator=get_next_batch(X_train, y_train),
+        steps_per_epoch=200,
         epochs=EPOCHS,
-        verbose=1,
-        validation_data=(X_val, y_val)
+        validation_data=get_next_batch(X_val, y_val),
+        validation_steps=2
+        #callbacks=[early_stopping, model_checkpoint]
     )
-
-    #model.fit_generator(
-    #    generator=get_next_batch(X_train, y_train),
-    #    steps_per_epoch=200,
-    #    epochs=EPOCHS,
-    #    validation_data=get_next_batch(X_val, y_val),
-    #    validation_steps=len(X_val)
-    #    callbacks=[early_stopping, model_checkpoint]
-    #)
 
     return model
 
@@ -108,7 +99,7 @@ model = get_conv2d_model()
 trained_model = train(model, X_train, y_train, X_val, y_val)
 
 # Save it
-utils.save_model(trained_model)
+#utils.save_model(trained_model)
 
 #utils.display_image(images, 234)
 #utils.display_label(labels, 234)
