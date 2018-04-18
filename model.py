@@ -87,11 +87,6 @@ X_val = reshape(X_val)
 y_train = one_hot_encode(y_train)
 y_val = one_hot_encode(y_val)
 
-#print(X_train.shape)
-#print(X_val.shape)
-
-#print(y_train.shape)
-
 # Get Conv2D model
 model = get_conv2d_model()
 
@@ -99,7 +94,7 @@ model = get_conv2d_model()
 trained_model = train(model, X_train, y_train, X_val, y_val)
 
 # Save it
-#utils.save_model(trained_model)
+utils.save_model(trained_model)
 
 #utils.display_image(images, 234)
 #utils.display_label(labels, 234)
