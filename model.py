@@ -60,17 +60,17 @@ def get_conv2d_model():
 
 def train(model, X_train, y_train, X_val, y_val):
     # Stop the training if delta val loss after 2 Epochs < 0.001
-    #early_stopping = EarlyStopping(monitor='val_loss', min_delta=0.0001, patience=2, verbose=0, mode='auto')
+    early_stopping = EarlyStopping(monitor='val_loss', min_delta=0.0001, patience=2, verbose=0, mode='auto')
     # Save the best model depending on the val_loss
-    #model_checkpoint = ModelCheckpoint("model.h5", monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto')
+    model_checkpoint = ModelCheckpoint("model.h5", monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto')
 
     model.fit_generator(
         generator=get_next_batch(X_train, y_train),
         steps_per_epoch=200,
         epochs=EPOCHS,
         validation_data=get_next_batch(X_val, y_val),
-        validation_steps=2
-        #callbacks=[early_stopping, model_checkpoint]
+        validation_steps=2,
+        callbacks=[early_stopping, model_checkpoint]
     )
 
     return model
