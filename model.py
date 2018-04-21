@@ -7,7 +7,7 @@ from keras.layers.convolutional import Convolution2D
 from keras.layers import Dense, Dropout, Flatten, Lambda, ELU, MaxPooling2D
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers.convolutional import Convolution2D
-from keras.optimizers import Adadelta
+from keras.optimizers import Adadelta, Adam
 from keras.models import Sequential
 
 # Define training parameters
@@ -42,6 +42,7 @@ def get_next_batch(X, y):
 def get_conv2d_model():
     model = Sequential()
     optimizer = Adadelta()
+    #optimizer = Adam()
 
     model.add(Lambda(lambda x: x / 127.5 - 1., input_shape=(28, 28, 1)))
     model.add(Convolution2D(64, (3, 3), activation='relu'))
@@ -52,7 +53,7 @@ def get_conv2d_model():
     model.add(Dropout(0.5))
     model.add(Dense(NUM_CLASSES, activation='softmax'))
 
-    model.compile(optimizer=optimizer, loss=keras.losses.categorical_crossentropy, metrics='accuracy')
+    model.compile(optimizer=optimizer, loss=keras.losses.categorical_crossentropy, metrics=['accuracy'])
 
     return model
 
