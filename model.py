@@ -7,11 +7,11 @@ from keras.layers.convolutional import Convolution2D
 from keras.layers import Dense, Dropout, Flatten, Lambda, ELU, MaxPooling2D
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers.convolutional import Convolution2D
-from keras.optimizers import Adam
+from keras.optimizers import Adadelta
 from keras.models import Sequential
 
 # Define training parameters
-BATCH_SIZE  = 128
+BATCH_SIZE  = 2000
 NUM_CLASSES = 10 # (0 to 9)
 EPOCHS      = 3
 
@@ -36,14 +36,12 @@ def get_next_batch(X, y):
             random_index = np.random.randint(len(X))
             X_batch[i] = X[random_index]
             y_batch[i] = y[random_index]
-        #print(X_batch.shape)
-        #print(y_batch.shape)
         yield X_batch, y_batch
 
 
 def get_conv2d_model():
     model = Sequential()
-    optimizer = Adam(lr=0.001)
+    optimizer = Adadelta()
 
     model.add(Lambda(lambda x: x / 127.5 - 1., input_shape=(28, 28, 1)))
     model.add(Convolution2D(64, (3, 3), activation='relu'))
@@ -54,7 +52,7 @@ def get_conv2d_model():
     model.add(Dropout(0.5))
     model.add(Dense(NUM_CLASSES, activation='softmax'))
 
-    model.compile(optimizer=optimizer, loss="mse")
+    model.compile(optimizer=optimizer, loss=keras.losses.categorical_crossentropy, metrics='accuracy')
 
     return model
 
@@ -66,11 +64,11 @@ def train(model, X_train, y_train, X_val, y_val):
 
     model.fit_generator(
         generator=get_next_batch(X_train, y_train),
-        steps_per_epoch=200,
+        steps_per_epoch=6000,
         epochs=EPOCHS,
         validation_data=get_next_batch(X_val, y_val),
-        validation_steps=2,
-        callbacks=[early_stopping, model_checkpoint]
+        validation_steps=len(X_val/2)
+        #callbacks=[early_stopping, model_checkpoint]
     )
 
     return model
