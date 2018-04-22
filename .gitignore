@@ -5,3 +5,4 @@ data/
 test.py
 model.json
 *.h5
+*.pem
