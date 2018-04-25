@@ -13,7 +13,7 @@ from keras.models import Sequential
 # Define training parameters
 BATCH_SIZE  = 2000
 NUM_CLASSES = 10 # (0 to 9)
-EPOCHS      = 3
+EPOCHS      = 10
 
 # 80% training set, 20% validation set
 def split_dataset(images, labels):
