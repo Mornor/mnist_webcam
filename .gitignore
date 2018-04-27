@@ -3,6 +3,5 @@
 __pycache__/
 data/
 test.py
-model.json
 *.h5
 *.pem

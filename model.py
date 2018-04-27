@@ -11,9 +11,9 @@ from keras.optimizers import Adadelta, Adam
 from keras.models import Sequential
 
 # Define training parameters
-BATCH_SIZE  = 2000
+BATCH_SIZE  = 128
 NUM_CLASSES = 10 # (0 to 9)
-EPOCHS      = 10
+EPOCHS      = 3
 
 # 80% training set, 20% validation set
 def split_dataset(images, labels):
@@ -65,10 +65,10 @@ def train(model, X_train, y_train, X_val, y_val):
 
     model.fit_generator(
         generator=get_next_batch(X_train, y_train),
-        steps_per_epoch=6000,
+        steps_per_epoch=200,
         epochs=EPOCHS,
         validation_data=get_next_batch(X_val, y_val),
-        validation_steps=len(X_val/2)
+        validation_steps=2
         #callbacks=[early_stopping, model_checkpoint]
     )
 
