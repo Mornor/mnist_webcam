@@ -26,9 +26,6 @@ class Application(tk.Frame):
         result_frame.tag_add("center", "1.0", "end")
         result_frame.pack(side='top')
 
-        
-
-
     def display_result(self):
         print('TODO')
 

@@ -4,6 +4,7 @@ from keras.optimizers import Adam
 from keras.models import model_from_json
 from keras.optimizers import Adadelta, Adam
 import cv2
+import numpy as np
 
 def get_model():
     with open('model.json', 'r') as jfile:
@@ -20,13 +21,20 @@ def img_to_mnist(image):
     gray_img = cv2.adaptiveThreshold(gray_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, blockSize=321, C=28)
     return gray_img
 
-def predict_input(model, image):
-    preditcted_number = int(model.predict(image, batch_size=1))
+def predict_input(model, image, classes):
+    class_prediction = model.predict_classes(image)[0]
+    prediction = np.around(np.max(model.predict(image)), 2)
+    label = classes[class_prediction]
+    print(label)
+
 
 # Load the trained model
 model = get_model()
 
+# Define classes - {0: 'zero', 1: 'one', 2: 'two', ...}
+classes = dict(enumerate(["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]))
+
 # Predict output based on image
 image = cv2.imread("data/3.png")
 image = img_to_mnist(image)
-predicted_number = predict_input(model, image)
+predicted_number = predict_input(model, image, classes)
