@@ -5,6 +5,7 @@ from keras.models import model_from_json
 from keras.optimizers import Adadelta, Adam
 import cv2
 import numpy as np
+from matplotlib import pyplot as plt
 
 def get_model(model_name):
     with open(model_name+ '.json', 'r') as jfile:
@@ -27,20 +28,23 @@ def predict_input(model, image, classes):
 
 
 # Load the trained model
-model = get_model('test_model')
+#model = get_model('test_model')
 
 # Define classes - {0: 'zero', 1: 'one', 2: 'two', ...}
 classes = dict(enumerate(["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]))
 
 # Predict output based on image
 image = cv2.imread("data/3.png", cv2.IMREAD_GRAYSCALE)
-#print(image.shape)
-image = np.resize(image, (image.shape[0], image.shape[1], 1))
+#image = np.resize(image, (image.shape[0], image.shape[1], 1))
+print(image.shape)
+plt.imshow(image, cmap='gray')
+plt.show()
+
 #print(image.shape)
 #image = img_to_mnist(image) # (351, 353)
 #print(image.shape)
-image = image[np.newaxis,:] # transform into (1, :, :, :)
-print(image.shape)
+#image = image[np.newaxis,:] # transform into (1, :, :, :)
+#print(image.shape)
 #image = image.reshape(28, 28, 1) # transform into (1, 351, 353, 1)
 #print(image.shape)
 #predicted_number = predict_input(model, image, classes)
