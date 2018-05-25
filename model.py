@@ -11,6 +11,7 @@ from keras.optimizers import Adadelta, Adam
 from keras.models import Sequential
 
 # Define training parameters
+#BATCH_SIZE  = 2000
 BATCH_SIZE  = 128
 NUM_CLASSES = 10 # (0 to 9)
 EPOCHS      = 3
@@ -20,11 +21,14 @@ def split_dataset(images, labels):
     X_train, X_val, y_train, y_val = train_test_split(images, labels, test_size=0.2)
     return X_train, X_val, y_train, y_val
 
+
 def reshape(X):
     return X.reshape(X.shape[0], 28, 28, 1)
 
+
 def one_hot_encode(y):
     return keras.utils.to_categorical(y, NUM_CLASSES)
+
 
 def get_next_batch(X, y):
     # Will contains images and labels
@@ -42,7 +46,6 @@ def get_next_batch(X, y):
 def get_conv2d_model():
     model = Sequential()
     optimizer = Adadelta()
-    #optimizer = Adam()
 
     model.add(Lambda(lambda x: x / 127.5 - 1., input_shape=(28, 28, 1)))
     model.add(Convolution2D(64, (3, 3), activation='relu'))
@@ -57,17 +60,21 @@ def get_conv2d_model():
 
     return model
 
+
 def train(model, X_train, y_train, X_val, y_val):
     # Stop the training if delta val loss after 2 Epochs < 0.001
     early_stopping = EarlyStopping(monitor='val_loss', min_delta=0.0001, patience=2, verbose=0, mode='auto')
     # Save the best model depending on the val_loss
     model_checkpoint = ModelCheckpoint("model.h5", monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto')
 
+    print(X_train.shape)  #(48000, 28, 28, 1)
+
     model.fit_generator(
         generator=get_next_batch(X_train, y_train),
         steps_per_epoch=200,
         epochs=EPOCHS,
         validation_data=get_next_batch(X_val, y_val),
+        #validation_steps=len(X_val/2)
         validation_steps=2
         #callbacks=[early_stopping, model_checkpoint]
     )
@@ -93,7 +100,4 @@ model = get_conv2d_model()
 trained_model = train(model, X_train, y_train, X_val, y_val)
 
 # Save it
-utils.save_model(trained_model)
-
-#utils.display_image(images, 234)
-#utils.display_label(labels, 234)
+utils.save_model(trained_model, 'test_model')

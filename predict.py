@@ -6,8 +6,8 @@ from keras.optimizers import Adadelta, Adam
 import cv2
 import numpy as np
 
-def get_model():
-    with open('model.json', 'r') as jfile:
+def get_model(model_name):
+    with open(model_name+ '.json', 'r') as jfile:
         model = model_from_json(json.load(jfile))
 
     optimizer = Adadelta()
@@ -29,12 +29,14 @@ def predict_input(model, image, classes):
 
 
 # Load the trained model
-model = get_model()
+model = get_model('test_model')
 
 # Define classes - {0: 'zero', 1: 'one', 2: 'two', ...}
 classes = dict(enumerate(["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]))
 
 # Predict output based on image
 image = cv2.imread("data/3.png")
-image = img_to_mnist(image)
+image = img_to_mnist(image) # (351, 353)
+image = image.reshape(1, image.shape[0], image.shape[1], 1) # transform into (1, 351, 2353, 1)
+#print(image.shape)
 predicted_number = predict_input(model, image, classes)
