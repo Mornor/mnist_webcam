@@ -2,18 +2,16 @@
 # @author Celien Nanson <cesliens@gmail.com>
 
 # Import
-import mnist
 import json
+import tensorflow as tf
+import numpy as np
 
-DATA_DIR_PATH = 'data/'
-mndata = mnist.MNIST(DATA_DIR_PATH)
-
-# Load and return the MNIST dataset
+# Load and return the MNIST dataset from tf.keras
 # 60000 images and labels
 # Each image is 28x28 pixels
 def load_dataset():
-    images, labels = mndata.load_training()
-    return images, labels
+    mnist = tf.keras.datasets.mnist
+    return mnist.load_data()
 
 # Display the images[index] to the console
 def display_image(images, index):
@@ -28,5 +26,6 @@ def save_model(model, name):
     with open('./' +name+ '.json', 'w') as outfile:
         json.dump(model.to_json(), outfile)
 
-#images, labels = load_dataset()
+#(X_train, y_train), (X_test, y_test) = load_dataset()
+#images, labels = load_test_set()
 #display_image(images, 235)

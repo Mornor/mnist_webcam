@@ -5,5 +5,4 @@ RUN apt-get update && \
     apt-get install python3-pip python3-dev -y && \
     pip3 install -U tensorflow && \
     pip3 install keras && \
-    pip3 install sklearn && \
-    pip3 install python-mnist
+    pip3 install sklearn
