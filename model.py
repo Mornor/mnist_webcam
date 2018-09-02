@@ -21,14 +21,11 @@ def split_dataset(images, labels):
     X_train, X_val, y_train, y_val = train_test_split(images, labels, test_size=0.2)
     return X_train, X_val, y_train, y_val
 
-
 def reshape(X):
     return X.reshape(X.shape[0], 28, 28, 1)
 
-
 def one_hot_encode(y):
     return keras.utils.to_categorical(y, NUM_CLASSES)
-
 
 def get_next_batch(X, y):
     # Will contains images and labels
@@ -41,7 +38,6 @@ def get_next_batch(X, y):
             X_batch[i] = X[random_index]
             y_batch[i] = y[random_index]
         yield X_batch, y_batch
-
 
 def get_conv2d_model():
     model = Sequential()
@@ -59,7 +55,6 @@ def get_conv2d_model():
     model.compile(optimizer=optimizer, loss=keras.losses.categorical_crossentropy, metrics=['accuracy'])
 
     return model
-
 
 def train(model, X_train, y_train, X_val, y_val):
     # Stop the training if delta val loss after 2 Epochs < 0.001
