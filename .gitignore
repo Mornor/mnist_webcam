@@ -5,5 +5,3 @@ data/
 test.py
 *.h5
 *.pem
-venv/
-pythonml/
