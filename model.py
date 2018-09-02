@@ -24,9 +24,6 @@ def split_dataset(images, labels):
 def reshape(X):
     return X.reshape(X.shape[0], 28, 28, 1)
 
-def one_hot_encode(y):
-    return keras.utils.to_categorical(y, NUM_CLASSES)
-
 def get_next_batch(X, y):
     # Will contains images and labels
     X_batch = np.zeros((BATCH_SIZE, 28, 28, 1))
@@ -41,7 +38,7 @@ def get_next_batch(X, y):
 
 def get_conv2d_model():
     model = Sequential()
-    optimizer = Adadelta()
+    optimizer = Adam()
 
     model.add(Lambda(lambda x: x / 127.5 - 1., input_shape=(28, 28, 1)))
     model.add(Convolution2D(64, (3, 3), activation='relu'))
@@ -54,19 +51,21 @@ def get_conv2d_model():
 
     model.compile(optimizer=optimizer, loss=keras.losses.categorical_crossentropy, metrics=['accuracy'])
 
+    #model.summary()
+
     return model
 
 def train(model, X_train, y_train, X_val, y_val):
     # Stop the training if delta val loss after 2 Epochs < 0.001
-    early_stopping = EarlyStopping(monitor='val_loss', min_delta=0.0001, patience=2, verbose=0, mode='auto')
+    #early_stopping = EarlyStopping(monitor='val_loss', min_delta=0.0001, patience=2, verbose=0, mode='auto')
     # Save the best model depending on the val_loss
-    model_checkpoint = ModelCheckpoint("model.h5", monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto')
+    #model_checkpoint = ModelCheckpoint("model.h5", monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto')
 
-    print(X_train.shape)  #(48000, 28, 28, 1)
+    #print(X_train.shape)  #(48000, 28, 28, 1)
 
     model.fit_generator(
         generator=get_next_batch(X_train, y_train),
-        steps_per_epoch=200,
+        steps_per_epoch=20,
         epochs=EPOCHS,
         validation_data=get_next_batch(X_val, y_val),
         #validation_steps=len(X_val/2)
@@ -77,16 +76,12 @@ def train(model, X_train, y_train, X_val, y_val):
     return model
 
 # Load dataset
-images, labels = utils.load_dataset()
-images = np.array(images)
-labels = np.array(labels)
+(X_train, y_train), (X_test, y_test) = utils.load_dataset()
 
 # Prepare dataset
-X_train, X_val, y_train, y_val = split_dataset(images, labels)
+X_train, X_val, y_train, y_val = split_dataset(X_train, y_train)
 X_train = reshape(X_train)
 X_val = reshape(X_val)
-y_train = one_hot_encode(y_train)
-y_val = one_hot_encode(y_val)
 
 # Get Conv2D model
 model = get_conv2d_model()
@@ -94,5 +89,9 @@ model = get_conv2d_model()
 # Train it
 trained_model = train(model, X_train, y_train, X_val, y_val)
 
+# Check the validity of the model on test dataset
+#X_test = reshape(X_test)
+val_loss, val_acc = trained_model.evaluate(X_test, y_test)
+
 # Save it
-utils.save_model(trained_model, 'test_model')
+#utils.save_model(trained_model, 'test_model')
