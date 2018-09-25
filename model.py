@@ -6,6 +6,7 @@ from sklearn.model_selection import train_test_split
 from keras.layers.convolutional import Convolution2D
 from keras.layers import Dense, Dropout, Flatten, Lambda, ELU, MaxPooling2D
 from keras.callbacks import EarlyStopping, ModelCheckpoint
+from keras.utils.np_utils import to_categorical
 from keras.layers.convolutional import Convolution2D
 from keras.optimizers import Adadelta, Adam
 from keras.models import Sequential
@@ -51,7 +52,7 @@ def get_conv2d_model():
 
     model.compile(optimizer=optimizer, loss=keras.losses.categorical_crossentropy, metrics=['accuracy'])
 
-    #model.summary()
+    model.summary()
 
     return model
 
@@ -82,16 +83,21 @@ def train(model, X_train, y_train, X_val, y_val):
 X_train, X_val, y_train, y_val = split_dataset(X_train, y_train)
 X_train = reshape(X_train)
 X_val = reshape(X_val)
+y_train = to_categorical(y_train)
+y_val = to_categorical(y_val)
 
 # Get Conv2D model
 model = get_conv2d_model()
 
 # Train it
 trained_model = train(model, X_train, y_train, X_val, y_val)
+#trained_model.summary()
 
 # Check the validity of the model on test dataset
-#X_test = reshape(X_test)
-val_loss, val_acc = trained_model.evaluate(X_test, y_test)
+X_test = reshape(X_test)
+y_test = to_categorical(y_test)
+#val_loss, val_acc = trained_model.evaluate(X_test, y_test)
+score = trained_model.evaluate(X_test, y_test, batch_size=128)
 
 # Save it
 #utils.save_model(trained_model, 'test_model')
