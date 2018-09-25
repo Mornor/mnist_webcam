@@ -15,7 +15,7 @@ from keras.models import Sequential
 #BATCH_SIZE  = 2000
 BATCH_SIZE  = 128
 NUM_CLASSES = 10 # (0 to 9)
-EPOCHS      = 3
+EPOCHS      = 5
 
 # 80% training set, 20% validation set
 def split_dataset(images, labels):
@@ -52,7 +52,7 @@ def get_conv2d_model():
 
     model.compile(optimizer=optimizer, loss=keras.losses.categorical_crossentropy, metrics=['accuracy'])
 
-    model.summary()
+    #model.summary()
 
     return model
 
@@ -66,11 +66,11 @@ def train(model, X_train, y_train, X_val, y_val):
 
     model.fit_generator(
         generator=get_next_batch(X_train, y_train),
-        steps_per_epoch=20,
+        steps_per_epoch=500,
         epochs=EPOCHS,
         validation_data=get_next_batch(X_val, y_val),
-        #validation_steps=len(X_val/2)
-        validation_steps=2
+        #validation_steps=len(X_val/2),
+        validation_steps=1000
         #callbacks=[early_stopping, model_checkpoint]
     )
 
@@ -96,8 +96,10 @@ trained_model = train(model, X_train, y_train, X_val, y_val)
 # Check the validity of the model on test dataset
 X_test = reshape(X_test)
 y_test = to_categorical(y_test)
-#val_loss, val_acc = trained_model.evaluate(X_test, y_test)
-score = trained_model.evaluate(X_test, y_test, batch_size=128)
+val_loss, val_acc = trained_model.evaluate(X_test, y_test)
+print(val_loss)
+print(val_acc)
+#score = trained_model.evaluate(X_test, y_test, batch_size=128)
 
 # Save it
-#utils.save_model(trained_model, 'test_model')
+utils.save_model(trained_model, 'model')
