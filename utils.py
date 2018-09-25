@@ -25,6 +25,7 @@ def display_label(labels, index):
 def save_model(model, name):
     with open('./' +name+ '.json', 'w') as outfile:
         json.dump(model.to_json(), outfile)
+    model.save_weights("model.h5")
 
 #(X_train, y_train), (X_test, y_test) = load_dataset()
 #images, labels = load_test_set()
