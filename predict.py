@@ -4,7 +4,7 @@ import tensorflow as tf
 from keras.optimizers import Adam
 from keras.models import model_from_json
 from keras.optimizers import Adadelta, Adam
-#import cv2
+import cv2
 import numpy as np
 #from matplotlib import pyplot as plt
 
@@ -21,11 +21,11 @@ def img_to_mnist(image):
     gray_img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     return gray_img
 
+# @param image of shape (28, 28, 1)
 def predict_input(model, image, classes):
     image = image[np.newaxis,:] # Add dimension to image to fit the input of the model
     prediction = np.argmax(model.predict(image))
     label = classes[prediction]
-    print(label)
     return label
 
 # Load the trained model
@@ -34,24 +34,15 @@ model = get_model('model')
 # Define classes - {0: 'zero', 1: 'one', 2: 'two', ...}
 classes = dict(enumerate(["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]))
 
-mnist = tf.keras.datasets.mnist
-(X_train, y_train), (X_test, y_test) = mnist.load_data()
-X_test = X_test.reshape(X_test.shape[0], 28, 28, 1)
-predict_input(model, X_test[0], classes)
-
 # Predict output based on image
-#image = cv2.imread("data/3.png", cv2.IMREAD_GRAYSCALE)
-#image = np.resize(image, (image.shape[0], image.shape[1], 1))
-#print(image.shape)
-#plt.imshow(image, cmap='gray')
-#plt.show()
+image = cv2.imread("data/3.png", cv2.IMREAD_GRAYSCALE)
+image = np.resize(image, (28, 28, 1))
+predicted_label = predict_input(model, image, classes)
+print(predicted_label)
 
-#print(image.shape)
-#image = cv2.imread("data/3.png", cv2.IMREAD_GRAYSCALE)
-#image = img_to_mnist(image) # (351, 353)
-#print(image.shape)
-#image = image[np.newaxis,:] # transform into (1, :, :, :)
-#print(image.shape)
-#image = image.reshape(28, 28, 1) # transform into (1, 351, 353, 1)
-#print(image.shape)
-#predicted_number = predict_input(model, image, classes)
+#mnist = tf.keras.datasets.mnist
+#(X_train, y_train), (X_test, y_test) = mnist.load_data()
+#X_test = X_test.reshape(X_test.shape[0], 28, 28, 1)
+#
+#predicted_label = predict_input(model, X_test[0], classes)
+#print(predicted_label)
