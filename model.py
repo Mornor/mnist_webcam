@@ -56,17 +56,15 @@ def get_conv2d_model():
 
     return model
 
-def train(model, X_train, y_train, X_val, y_val):
+def train_with_generator(model, X_train, y_train, X_val, y_val):
     # Stop the training if delta val loss after 2 Epochs < 0.001
     #early_stopping = EarlyStopping(monitor='val_loss', min_delta=0.0001, patience=2, verbose=0, mode='auto')
     # Save the best model depending on the val_loss
     #model_checkpoint = ModelCheckpoint("model.h5", monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto')
 
-    #print(X_train.shape)  #(48000, 28, 28, 1)
-
     model.fit_generator(
         generator=get_next_batch(X_train, y_train),
-        steps_per_epoch=500,
+        steps_per_epoch=1000,
         epochs=EPOCHS,
         validation_data=get_next_batch(X_val, y_val),
         #validation_steps=len(X_val/2),
@@ -90,16 +88,16 @@ y_val = to_categorical(y_val)
 model = get_conv2d_model()
 
 # Train it
-trained_model = train(model, X_train, y_train, X_val, y_val)
-#trained_model.summary()
+#trained_model = train_with_generator(model, X_train, y_train, X_val, y_val)
+trained_model = model.fit(X_train, y_train, validation_data=(X_val, y_val), epochs=3, batch_size=64)
+model.save('test_model.model')
 
 # Check the validity of the model on test dataset
-X_test = reshape(X_test)
-y_test = to_categorical(y_test)
-val_loss, val_acc = trained_model.evaluate(X_test, y_test)
-print(val_loss)
-print(val_acc)
-#score = trained_model.evaluate(X_test, y_test, batch_size=128)
+#X_test = reshape(X_test)
+#y_test = to_categorical(y_test)
+#val_loss, val_acc = trained_model.evaluate(X_test, y_test)
+#print(val_loss)
+#print(val_acc)
 
-# Save it
-utils.save_model(trained_model, 'model')
+# Save it in case of trained with fit_generator()
+#utils.save_model(trained_model, 'test_model')

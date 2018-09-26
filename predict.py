@@ -4,6 +4,7 @@ import tensorflow as tf
 from keras.optimizers import Adam
 from keras.models import model_from_json
 from keras.optimizers import Adadelta, Adam
+from keras.models import load_model
 import cv2
 import numpy as np
 #from matplotlib import pyplot as plt
@@ -14,12 +15,8 @@ def get_model(model_name):
 
     optimizer = Adam()
     model.compile(optimizer=optimizer, loss=keras.losses.categorical_crossentropy, metrics=['accuracy'])
-    model.load_weights('model.h5')
+    model.load_weights(model_name+'.h5')
     return model
-
-def img_to_mnist(image):
-    gray_img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    return gray_img
 
 # @param image of shape (28, 28, 1)
 def predict_input(model, image, classes):
@@ -29,13 +26,14 @@ def predict_input(model, image, classes):
     return label
 
 # Load the trained model
-model = get_model('model')
+#model = get_model('test_model')
+model = load_model('test_model.model')
 
 # Define classes - {0: 'zero', 1: 'one', 2: 'two', ...}
 classes = dict(enumerate(["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]))
 
 # Predict output based on image
-image = cv2.imread("data/3.png", cv2.IMREAD_GRAYSCALE)
+image = cv2.imread("data/8.png", cv2.IMREAD_GRAYSCALE)
 image = np.resize(image, (28, 28, 1))
 predicted_label = predict_input(model, image, classes)
 print(predicted_label)
