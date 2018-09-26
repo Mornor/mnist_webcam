@@ -22,12 +22,11 @@ def img_to_mnist(image):
     return gray_img
 
 def predict_input(model, image, classes):
-    class_prediction = model.predict_classes(image)[0]
-    print(class_prediction)
-    #prediction = np.around(np.max(model.predict(image)), 2)
-    label = classes[class_prediction]
+    image = image[np.newaxis,:] # Add dimension to image to fit the input of the model
+    prediction = np.argmax(model.predict(image))
+    label = classes[prediction]
     print(label)
-
+    return label
 
 # Load the trained model
 model = get_model('model')
@@ -38,14 +37,7 @@ classes = dict(enumerate(["zero", "one", "two", "three", "four", "five", "six", 
 mnist = tf.keras.datasets.mnist
 (X_train, y_train), (X_test, y_test) = mnist.load_data()
 X_test = X_test.reshape(X_test.shape[0], 28, 28, 1)
-#predict_input(model, X_test, classes)
-
-image = X_test[0]
-print(image.shape)
-image = image[np.newaxis,:]
-print(image.shape)
-predictions = model.predict(image)
-print(np.argmax(predictions))
+predict_input(model, X_test[0], classes)
 
 # Predict output based on image
 #image = cv2.imread("data/3.png", cv2.IMREAD_GRAYSCALE)
