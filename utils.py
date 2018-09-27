@@ -5,6 +5,7 @@
 import json
 import tensorflow as tf
 import numpy as np
+#from matplotlib import pyplot as plt
 
 # Load and return the MNIST dataset from tf.keras
 # 60000 images and labels
@@ -25,8 +26,10 @@ def display_label(labels, index):
 def save_model(model, name):
     with open('./' +name+ '.json', 'w') as outfile:
         json.dump(model.to_json(), outfile)
-    model.save_weights("model.h5")
+    model.save_weights(name + '.h5')
 
 #(X_train, y_train), (X_test, y_test) = load_dataset()
+#plt.imshow(X_test[0])
+#plt.show()
 #images, labels = load_test_set()
 #display_image(images, 235)
