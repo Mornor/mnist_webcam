@@ -33,7 +33,10 @@ model = load_model('test_model.model')
 classes = dict(enumerate(["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]))
 
 # Predict output based on image
-image = cv2.imread("data/example5.png", cv2.IMREAD_GRAYSCALE)
+#image = cv2.imread("data/8.png", cv2.IMREAD_GRAYSCALE)
+image = cv2.imread("data/3.png")
+image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
 image = np.resize(image, (28, 28, 1))
 print(image.shape)
 predicted_label = predict_input(model, image, classes)
