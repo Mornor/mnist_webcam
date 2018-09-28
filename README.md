@@ -5,10 +5,10 @@ Small Neural Network trained on [mnsit](http://yann.lecun.com/exdb/mnist/) datas
 I have created a Dockerfile with all the dependencies. To pass the display and be able to use [Matplotlib](https://matplotlib.org/) to display images with the Docker container, I also used [XQuartz](https://www.xquartz.org/).
 
 To use the Docker image with Matplotlib:
-1. Build the Docker image from the Dockerfile: `docker build -t pythonml .`
-2. Start XQuartz: (`open -a XQuartz`)
-3. In a bash session, add localhost to xhost and export the display: `xhost + 127.0.0.1` and then `export DISPLAY=host.docker.internal`
-4. Start a bash session in the Docker container: `docker run -it -e DISPLAY=host.docker.internal:0 -v $PWD:/t -w /t pythonml bash`
+1. Build the Docker image from the Dockerfile `docker build -t pythonml .`
+2. Start XQuartz `open -a XQuartz`
+3. In a bash session, add localhost to xhost and export the display `xhost + 127.0.0.1` and then `export DISPLAY=host.docker.internal`
+4. Start a bash session in the Docker container `docker run -it -e DISPLAY=host.docker.internal:0 -v $PWD:/t -w /t pythonml bash`
 
 Train the network within the Docker container: `python3 model.py` <br/>
 Predict on a single input: `IMG_PATH=<img_path> python3 predict.py`
