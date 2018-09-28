@@ -1,4 +1,4 @@
-### Convolutional Neural Network trained for mnist dataset
+## Convolutional Neural Network trained for mnist dataset
 Small Neural Network trained on [mnsit](http://yann.lecun.com/exdb/mnist/) dataset with Keras (Tensorflow backend).
 
 ### How to use
