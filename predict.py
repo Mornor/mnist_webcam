@@ -2,6 +2,7 @@ import cv2
 import json
 import keras
 import os
+import utils
 import numpy as np
 import tensorflow as tf
 from keras.optimizers import Adam
@@ -35,13 +36,12 @@ model = load_model('test_model.model')
 # Define classes - {0: 'zero', 1: 'one', 2: 'two', ...}
 classes = dict(enumerate(["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]))
 
-# Predict output based on image
-#image = cv2.imread("data/8.png", cv2.IMREAD_GRAYSCALE)
+# Predict output based on input image
 if(IMG_PATH):
     image = cv2.imread(IMG_PATH)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     # Invert image: black becomes white and white becomes black
-    _, image = cv2.threshold(image, 90, 255, cv2.THRESH_BINARY_INV)
+    image = utils.invert_image(image)
     image = np.resize(image, (28, 28, 1))
     predicted_label = predict_input(model, image, classes)
     print('Predicted output = ' +predicted_label)

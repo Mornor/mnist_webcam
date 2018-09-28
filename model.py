@@ -1,5 +1,6 @@
 # Imports
 import utils
+import cv2
 import numpy as np
 import keras
 from sklearn.model_selection import train_test_split
@@ -11,11 +12,10 @@ from keras.layers.convolutional import Convolution2D
 from keras.optimizers import Adadelta, Adam
 from keras.models import Sequential
 
-# Define training parameters
-#BATCH_SIZE  = 2000
-BATCH_SIZE  = 128
+# Training parameters
+BATCH_SIZE  = 64
 NUM_CLASSES = 10 # (0 to 9)
-EPOCHS      = 5
+EPOCHS      = 13
 
 # 80% training set, 20% validation set
 def split_dataset(images, labels):
@@ -44,10 +44,10 @@ def get_conv2d_model():
     model.add(Lambda(lambda x: x / 127.5 - 1., input_shape=(28, 28, 1)))
     model.add(Convolution2D(64, (3, 3), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.25))
+    #model.add(Dropout(0.25))
     model.add(Flatten())
     model.add(Dense(128, activation='relu'))
-    model.add(Dropout(0.5))
+    #model.add(Dropout(0.5))
     model.add(Dense(NUM_CLASSES, activation='softmax'))
 
     model.compile(optimizer=optimizer, loss=keras.losses.categorical_crossentropy, metrics=['accuracy'])
@@ -81,20 +81,20 @@ def train_with_generator(model, X_train, y_train, X_val, y_val):
 X_train, X_val, y_train, y_val = split_dataset(X_train, y_train)
 X_train = reshape(X_train)
 X_val = reshape(X_val)
+X_test = reshape(X_test)
 y_train = to_categorical(y_train)
 y_val = to_categorical(y_val)
+y_test = to_categorical(y_test)
 
 # Get Conv2D model
 model = get_conv2d_model()
 
 # Train it
 #trained_model = train_with_generator(model, X_train, y_train, X_val, y_val)
-trained_model = model.fit(X_train, y_train, validation_data=(X_val, y_val), epochs=3, batch_size=64)
+trained_model = model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=EPOCHS, batch_size=BATCH_SIZE)
 model.save('test_model.model')
 
-# Check the validity of the model on test dataset
-#X_test = reshape(X_test)
-#y_test = to_categorical(y_test)
+# Check the validity of the model on test dataset if trained with fit_generator
 #val_loss, val_acc = trained_model.evaluate(X_test, y_test)
 #print(val_loss)
 #print(val_acc)
