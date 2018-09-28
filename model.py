@@ -91,7 +91,7 @@ model = get_conv2d_model()
 
 # Train it
 #trained_model = train_with_generator(model, X_train, y_train, X_val, y_val)
-trained_model = model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=EPOCHS, batch_size=BATCH_SIZE)
+trained_model = model.fit(X_train, y_train, validation_data=(X_val, y_val), epochs=EPOCHS, batch_size=BATCH_SIZE)
 model.save('test_model.model')
 
 # Check the validity of the model on test dataset if trained with fit_generator
